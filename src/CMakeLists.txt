@@ -16,6 +16,9 @@ add_executable(mpags-cipher
 # add new directories
 target_include_directories(mpags-cipher
                            PRIVATE MPAGSCipher)
+# set directory for executable
+set_target_properties(mpags-cipher PROPERTIES 
+                      RUNTIME_OUTPUT_DIRECTORY ../src)
 
 # add flags
 set(CMAKE_CXX_FLAGS "-Wall -Wextra -Werror -Wfatal-errors -Wshadow -pedantic")

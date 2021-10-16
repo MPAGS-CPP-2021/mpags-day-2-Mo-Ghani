@@ -59,10 +59,10 @@ int main(int argc, char* argv[])
 
     // Read in user input from stdin/file
     std::ifstream in_file {inputFile};
-    if (!in_file.good()) {
+    if (!in_file.good() && !inputFile.empty()) {
         std::cerr << "Error reading input from file: " << inputFile << "\n";
     }
-
+    
     // Initialise variables
     char inputChar{'x'};
     std::string inputText;
