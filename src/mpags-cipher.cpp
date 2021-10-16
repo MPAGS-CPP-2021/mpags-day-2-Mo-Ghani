@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <fstream>
 
 #include "MPAGSCipher/TransformChar.hpp" // added MPAGSCipher/ to remove error squigglies...
 #include "MPAGSCipher/ProcessCommandLine.hpp"
@@ -57,10 +58,9 @@ int main(int argc, char* argv[])
     }
 
     // Read in user input from stdin/file
-    // Warn that input file option not yet implemented
-    if (!inputFile.empty()) {
-        std::cerr << "[warning] input from file ('" << inputFile
-                  << "') not implemented yet, using stdin\n";
+    std::ifstream in_file {inputFile};
+    if (!in_file.good()) {
+        std::cerr << "Error reading input from file: " << inputFile << "\n";
     }
 
     // Initialise variables
@@ -68,19 +68,29 @@ int main(int argc, char* argv[])
     std::string inputText;
 
     // loop over each character from user input
-    while (std::cin >> inputChar) {
-        inputText += transformChar(inputChar);
+    if (inputFile.empty()) {
+        std::cout << "No input file specified - enter input text: \n";
+        while (std::cin >> inputChar) {
+            inputText += transformChar(inputChar);
+        }
+    }
+    else {
+        while (in_file >> inputChar) {
+            inputText += transformChar(inputChar);
+        }
+        in_file.close();
     }
 
-    // Print out the transliterated text
-
-    // Warn that output file option not yet implemented
-    if (!outputFile.empty()) {
-        std::cerr << "[warning] output to file ('" << outputFile
-                  << "') not implemented yet, using stdout\n";
+    // print or write results
+    if (outputFile.empty()) {
+        std::cout << "No output file specified - printing results: \n";
+        std::cout << inputText << "\n";
     }
-
-    std::cout << inputText << std::endl;
+    else {
+        std::ofstream out_file {outputFile};
+        out_file << inputText;
+        out_file.close();   
+    }
 
     // No requirement to return from main, but we do so for clarity
     // and for consistency with other functions
