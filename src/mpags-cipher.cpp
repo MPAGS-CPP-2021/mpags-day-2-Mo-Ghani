@@ -6,6 +6,7 @@
 
 #include "MPAGSCipher/TransformChar.hpp" // added MPAGSCipher/ to remove error squigglies...
 #include "MPAGSCipher/ProcessCommandLine.hpp"
+#include "MPAGSCipher/RunCaesarCipher.hpp"
 
 int main(int argc, char* argv[])
 {
@@ -16,7 +17,7 @@ int main(int argc, char* argv[])
     bool versionRequested{false};
     std::string inputFile{""};
     std::string outputFile{""};
-    int cipher_key{0};
+    std::size_t cipher_key{0};
     bool decrypt{0};
 
     // Process command line arguments - ignore zeroth element, as we know this
@@ -33,7 +34,7 @@ int main(int argc, char* argv[])
         std::cout << "Exiting...\n";
         return 0;
     }
-    std::cout << "\n\n key: " << cipher_key << "  decrypt: " << decrypt << "\n\n";
+
     // Handle help, if requested
     if (helpRequested) {
         // Line splitting for readability
@@ -88,14 +89,23 @@ int main(int argc, char* argv[])
         in_file.close();
     }
 
+    std::cout << "\n\nUsing Caesar Cipher with key: " << cipher_key << "\n";
+    if (!decrypt){
+        std::cout << "Mode: encryption\n\n";
+    } else {
+        std::cout << "Mode: decryption\n\n";
+    }
+
+    std::string outputText = runCaesarCipher(inputText, cipher_key, decrypt);
+
     // print or write results
     if (outputFile.empty()) {
         std::cout << "No output file specified - printing results: \n";
-        std::cout << inputText << "\n";
+        std::cout << outputText << "\n";
     }
     else {
         std::ofstream out_file {outputFile};
-        out_file << inputText;
+        out_file << outputText;
         out_file.close();   
     }
 

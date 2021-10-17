@@ -9,7 +9,7 @@ bool processCommandLine(const std::vector<std::string>& args,
                         bool& versionRequested,
                         std::string& inputFile,
                         std::string& outputFile,
-                        int& cipher_key,
+                        size_t& cipher_key,
                         bool& decrypt) {
     
     /*
@@ -69,7 +69,7 @@ bool processCommandLine(const std::vector<std::string>& args,
                 // exit main with non-zero return to indicate failure
                 return 1;
             }
-            try{cipher_key = std::stoi(args[i]);}
+            try{cipher_key = std::stoul(args[i]);}
             catch(std::invalid_argument const &ex) {
                 std::cerr << "[error] -k expected an integer key as input \n";
                 return 1;
