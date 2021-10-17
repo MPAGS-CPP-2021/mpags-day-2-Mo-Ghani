@@ -8,7 +8,9 @@ bool processCommandLine(const std::vector<std::string>& args,
                         bool& helpRequested,
                         bool& versionRequested,
                         std::string& inputFile,
-                        std::string& outputFile) {
+                        std::string& outputFile,
+                        int& cipher_key,
+                        bool& decrypt) {
     
     /*
     Function to parse and process the arguments given to src/mpags-cipher 
@@ -19,6 +21,8 @@ bool processCommandLine(const std::vector<std::string>& args,
         bool& versionRequested                 - bool signalling for version number
         std::string& inputFile                 - directory of a file to read from
         std::string& outputFile                - directory of a file to write to
+        int& cipher_key                        - key used to encrypt/decrypt input text
+        bool& decrypt                          - switch used for decryption
     
     RETURN:
 
@@ -56,6 +60,35 @@ bool processCommandLine(const std::vector<std::string>& args,
                 // Got filename, so assign value and advance past it
                 outputFile = args[i + 1];
                 ++i;
+            }
+        } else if (args[i] == "-k") {
+            // Handle cipher key option
+            i++;
+            if (i == nArgs) {
+                std::cerr << "[error] -k requires an integer argument \n";
+                // exit main with non-zero return to indicate failure
+                return 1;
+            }
+            try{cipher_key = std::stoi(args[i]);}
+            catch(std::invalid_argument const &ex) {
+                std::cerr << "[error] -k expected an integer key as input \n";
+                return 1;
+            }
+        } else if (args[i] == "-d") {
+            // Handle decrypt toggle option
+            // if left unchanged, encryption is selected by default
+            i++;
+            if (i == nArgs) {
+                std::cerr << "[error] -d requires an argument \n";
+                // exit main with non-zero return to indicate failure
+                return 1;
+            }
+            if (args[i] == "1") {
+                decrypt = 1;
+            } else if (args[i] != "0") {
+                std::cerr << "[error] -d expected either '1' or '0' as input \n";
+                // exit main with non-zero return to indicate failure
+                return 1;
             }
         } else {
             // Have an unknown flag to output error message and return non-zero

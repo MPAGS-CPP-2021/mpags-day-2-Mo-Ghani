@@ -16,6 +16,8 @@ int main(int argc, char* argv[])
     bool versionRequested{false};
     std::string inputFile{""};
     std::string outputFile{""};
+    int cipher_key{0};
+    bool decrypt{0};
 
     // Process command line arguments - ignore zeroth element, as we know this
     // to be the program name and don't need to worry about it
@@ -23,13 +25,15 @@ int main(int argc, char* argv[])
                                      helpRequested,
                                      versionRequested,
                                      inputFile,
-                                     outputFile);
+                                     outputFile,
+                                     cipher_key,
+                                     decrypt);
     if (status) {
         // terminate after error in processing command line
         std::cout << "Exiting...\n";
         return 0;
     }
-
+    std::cout << "\n\n key: " << cipher_key << "  decrypt: " << decrypt << "\n\n";
     // Handle help, if requested
     if (helpRequested) {
         // Line splitting for readability
@@ -43,6 +47,9 @@ int main(int argc, char* argv[])
             << "                   Stdin will be used if not supplied\n\n"
             << "  -o FILE          Write processed text to FILE\n"
             << "                   Stdout will be used if not supplied\n\n"
+            << "  -k int           Integer key to be used for encryption/decryption\n\n"
+            << "  -d bool          Specify that input text should be decrypted\n"
+            << "                   Encryption is selected by default\n\n"
             << std::endl;
         // Help requires no further action, so return from main
         // with 0 used to indicate success
